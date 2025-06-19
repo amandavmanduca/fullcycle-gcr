@@ -24,6 +24,12 @@ func main() {
 	services := container.NewServicesContainer(&clients)
 	handler := handlers.NewHandlerContainers(services)
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	log.Println("Starting server on port", port)
+
 	http.HandleFunc("/address-info", handler.CepHandler.GetAddressInfo)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+port, nil)
 }
