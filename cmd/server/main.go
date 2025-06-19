@@ -8,14 +8,9 @@ import (
 	"github.com/amandavmanduca/fullcycle-gcr/clients"
 	"github.com/amandavmanduca/fullcycle-gcr/internal/container"
 	"github.com/amandavmanduca/fullcycle-gcr/internal/handlers"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 	clientsConfig := clients.ClientsConfig{
 		WeatherApiKey: os.Getenv("WEATHER_API_KEY"),
 	}
