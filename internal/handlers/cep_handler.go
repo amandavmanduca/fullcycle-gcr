@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"math"
 	"net/http"
 
 	localErrs "github.com/amandavmanduca/fullcycle-gcr/errors"
@@ -51,9 +52,9 @@ func (h *cepHandler) GetAddressInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mapResponse := map[string]float64{
-		"temp_c": weather.TempC,
-		"temp_f": weather.TempF,
-		"temp_k": weather.TempK,
+		"temp_c": roundTo(weather.TempC, 2),
+		"temp_f": roundTo(weather.TempF, 2),
+		"temp_k": roundTo(weather.TempK, 2),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -62,4 +63,9 @@ func (h *cepHandler) GetAddressInfo(w http.ResponseWriter, r *http.Request) {
 		Data:  mapResponse,
 		Error: nil,
 	})
+}
+
+func roundTo(x float64, decimals int) float64 {
+	factor := math.Pow(10, float64(decimals))
+	return math.Round(x*factor) / factor
 }
