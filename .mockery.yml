@@ -1,0 +1,15 @@
+log-level: info
+formatter: goimports
+force-file-write: true
+dir: ./mocks
+require-template-schema-exists: true
+template: testify
+template-schema: '{{.Template}}.schema.json'
+filename: mocks.go
+structname: '{{.Mock}}{{.InterfaceName}}'
+pkgname: mocks
+packages:
+  ./interfaces:
+    config:
+      all: true
+      recursive: true

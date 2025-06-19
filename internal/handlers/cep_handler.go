@@ -37,7 +37,7 @@ func (h *cepHandler) GetAddressInfo(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(
 				structs.HttpResponse{
 					Data:  nil,
-					Error: err.Error(),
+					Error: structs.HttpErrorResponse{Message: err.Error(), Status: http.StatusNotFound},
 				})
 			return
 		}
@@ -45,7 +45,7 @@ func (h *cepHandler) GetAddressInfo(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(
 			structs.HttpResponse{
 				Data:  nil,
-				Error: err.Error(),
+				Error: structs.HttpErrorResponse{Message: err.Error(), Status: http.StatusInternalServerError},
 			})
 		return
 	}
