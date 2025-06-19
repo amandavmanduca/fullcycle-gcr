@@ -17,6 +17,10 @@ func NewWeatherService(clients *interfaces.ClientsContainer) interfaces.WeatherS
 	}
 }
 
-func (s *weatherService) GetWeather(ctx context.Context, city string) (*structs.WeatherResponse, error) {
-	return s.clients.WeatherApi.GetWeather(ctx, city)
+func (s *weatherService) GetWeather(ctx context.Context, city string) (*structs.Weather, error) {
+	res, err := s.clients.WeatherApi.GetWeather(ctx, city)
+	if err != nil {
+		return nil, err
+	}
+	return structs.NewWeatherFromCelsius(res.Current.TempC), nil
 }
