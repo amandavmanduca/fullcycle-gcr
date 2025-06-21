@@ -9,7 +9,7 @@ import (
 
 	localErrs "github.com/amandavmanduca/fullcycle-gcr/errors"
 	"github.com/amandavmanduca/fullcycle-gcr/interfaces"
-	"github.com/amandavmanduca/fullcycle-gcr/internal/container"
+	"github.com/amandavmanduca/fullcycle-gcr/internal/container/services"
 	"github.com/amandavmanduca/fullcycle-gcr/structs"
 )
 
@@ -17,7 +17,7 @@ type cepHandler struct {
 	cepService interfaces.CepServiceInterface
 }
 
-func NewCepHandler(services container.ServicesContainer) cepHandler {
+func NewCepHandler(services services.ServicesContainer) cepHandler {
 	return cepHandler{
 		cepService: services.CepService,
 	}
