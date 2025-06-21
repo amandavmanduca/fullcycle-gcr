@@ -4,3 +4,6 @@ test:
 
 run:
 	docker compose up -d --build
+
+mocks:
+	mockery

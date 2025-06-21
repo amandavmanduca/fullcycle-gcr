@@ -40,8 +40,8 @@ func (_m *MockHttpClientInterface) EXPECT() *MockHttpClientInterface_Expecter {
 }
 
 // Get provides a mock function for the type MockHttpClientInterface
-func (_mock *MockHttpClientInterface) Get(ctx context.Context, path string) (*http.Response, error) {
-	ret := _mock.Called(ctx, path)
+func (_mock *MockHttpClientInterface) Get(ctx context.Context, path string, queryParams map[string]string) (*http.Response, error) {
+	ret := _mock.Called(ctx, path, queryParams)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
@@ -49,18 +49,18 @@ func (_mock *MockHttpClientInterface) Get(ctx context.Context, path string) (*ht
 
 	var r0 *http.Response
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) (*http.Response, error)); ok {
-		return returnFunc(ctx, path)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, map[string]string) (*http.Response, error)); ok {
+		return returnFunc(ctx, path, queryParams)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) *http.Response); ok {
-		r0 = returnFunc(ctx, path)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, map[string]string) *http.Response); ok {
+		r0 = returnFunc(ctx, path, queryParams)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*http.Response)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = returnFunc(ctx, path)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, map[string]string) error); ok {
+		r1 = returnFunc(ctx, path, queryParams)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -75,11 +75,12 @@ type MockHttpClientInterface_Get_Call struct {
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
 //   - path string
-func (_e *MockHttpClientInterface_Expecter) Get(ctx interface{}, path interface{}) *MockHttpClientInterface_Get_Call {
-	return &MockHttpClientInterface_Get_Call{Call: _e.mock.On("Get", ctx, path)}
+//   - queryParams map[string]string
+func (_e *MockHttpClientInterface_Expecter) Get(ctx interface{}, path interface{}, queryParams interface{}) *MockHttpClientInterface_Get_Call {
+	return &MockHttpClientInterface_Get_Call{Call: _e.mock.On("Get", ctx, path, queryParams)}
 }
 
-func (_c *MockHttpClientInterface_Get_Call) Run(run func(ctx context.Context, path string)) *MockHttpClientInterface_Get_Call {
+func (_c *MockHttpClientInterface_Get_Call) Run(run func(ctx context.Context, path string, queryParams map[string]string)) *MockHttpClientInterface_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -89,9 +90,14 @@ func (_c *MockHttpClientInterface_Get_Call) Run(run func(ctx context.Context, pa
 		if args[1] != nil {
 			arg1 = args[1].(string)
 		}
+		var arg2 map[string]string
+		if args[2] != nil {
+			arg2 = args[2].(map[string]string)
+		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -102,7 +108,7 @@ func (_c *MockHttpClientInterface_Get_Call) Return(response *http.Response, err 
 	return _c
 }
 
-func (_c *MockHttpClientInterface_Get_Call) RunAndReturn(run func(ctx context.Context, path string) (*http.Response, error)) *MockHttpClientInterface_Get_Call {
+func (_c *MockHttpClientInterface_Get_Call) RunAndReturn(run func(ctx context.Context, path string, queryParams map[string]string) (*http.Response, error)) *MockHttpClientInterface_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
