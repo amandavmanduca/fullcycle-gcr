@@ -6,6 +6,7 @@ import (
 
 	"github.com/amandavmanduca/fullcycle-gcr/errors"
 	"github.com/amandavmanduca/fullcycle-gcr/interfaces"
+	"github.com/amandavmanduca/fullcycle-gcr/internal/container/services"
 	"github.com/amandavmanduca/fullcycle-gcr/mocks"
 	"github.com/amandavmanduca/fullcycle-gcr/structs"
 	"github.com/stretchr/testify/assert"
@@ -26,10 +27,12 @@ func TestGetAddress(t *testing.T) {
 			},
 			Origin: structs.VIA_CEP,
 		}, nil).Times(1)
-		service := NewCepService(&interfaces.ClientsContainer{
+
+		cepService := NewCepService(&interfaces.ClientsContainer{
 			ViaCepApi: viaCepApiMock,
-		})
-		address, err := service.GetAddress(ctx, cep)
+		}, &services.ServicesContainer{})
+
+		address, err := cepService.GetAddress(ctx, cep)
 		assert.Nil(t, err)
 		assert.Equal(t, "Test City", address.Address.City)
 	})
@@ -51,17 +54,18 @@ func TestGetCepWeatherInfo(t *testing.T) {
 			Origin: structs.VIA_CEP,
 		}, nil).Times(1)
 
-		weatherApiMock := mocks.NewMockWeatherApiInterface(t)
-		weatherApiMock.EXPECT().GetWeather(ctx, "Test City").Return(&structs.WeatherResponse{
-			Current: structs.CurrentWeather{
-				TempC: 25.0,
-			},
+		servicesContainer := &services.ServicesContainer{}
+		mockWeatherService := mocks.NewMockWeatherServiceInterface(t)
+		mockWeatherService.EXPECT().GetWeather(ctx, "Test City").Return(&structs.Weather{
+			TempC: 25.0,
+			TempF: 77.0,
+			TempK: 298.0,
 		}, nil).Times(1)
 
+		servicesContainer.WeatherService = mockWeatherService
 		service := NewCepService(&interfaces.ClientsContainer{
-			ViaCepApi:  viaCepApiMock,
-			WeatherApi: weatherApiMock,
-		})
+			ViaCepApi: viaCepApiMock,
+		}, servicesContainer)
 
 		weather, err := service.GetCepWeatherInfo(ctx, cep)
 		assert.Nil(t, err)
@@ -84,12 +88,11 @@ func TestGetCepWeatherInfo(t *testing.T) {
 			Origin: structs.VIA_CEP,
 		}, nil).Times(1)
 
-		weatherApiMock := mocks.NewMockWeatherApiInterface(t)
+		servicesContainer := &services.ServicesContainer{}
 
 		service := NewCepService(&interfaces.ClientsContainer{
-			ViaCepApi:  viaCepApiMock,
-			WeatherApi: weatherApiMock,
-		})
+			ViaCepApi: viaCepApiMock,
+		}, servicesContainer)
 
 		weather, err := service.GetCepWeatherInfo(ctx, cep)
 		assert.NotNil(t, err)
@@ -111,13 +114,14 @@ func TestGetCepWeatherInfo(t *testing.T) {
 			Origin: structs.VIA_CEP,
 		}, nil).Times(1)
 
-		weatherApiMock := mocks.NewMockWeatherApiInterface(t)
-		weatherApiMock.EXPECT().GetWeather(ctx, "Test City").Return(nil, nil).Times(1)
+		servicesContainer := &services.ServicesContainer{}
+		mockWeatherService := mocks.NewMockWeatherServiceInterface(t)
+		mockWeatherService.EXPECT().GetWeather(ctx, "Test City").Return(nil, errors.ErrWeatherNotFound).Times(1)
 
+		servicesContainer.WeatherService = mockWeatherService
 		service := NewCepService(&interfaces.ClientsContainer{
-			ViaCepApi:  viaCepApiMock,
-			WeatherApi: weatherApiMock,
-		})
+			ViaCepApi: viaCepApiMock,
+		}, servicesContainer)
 
 		weather, err := service.GetCepWeatherInfo(ctx, cep)
 		assert.Nil(t, weather)
