@@ -14,6 +14,10 @@ func main() {
 	clientsConfig := clients.ClientsConfig{
 		WeatherApiKey: os.Getenv("WEATHER_API_KEY"),
 	}
+
+	if clientsConfig.WeatherApiKey == "" {
+		log.Fatal("WEATHER_API_KEY environment variable is not set")
+	}
 	clients := clients.NewClientsContainer(clientsConfig)
 
 	services := container.NewServicesContainer(&clients)

@@ -22,7 +22,7 @@ func NewViaCepApiClient(httpClient interfaces.HttpClientInterface) interfaces.Vi
 }
 
 func (c *viaCepApiClient) GetAddress(ctx context.Context, cep string) (*structs.AddressResponse, error) {
-	resp, err := c.httpClient.Get(ctx, fmt.Sprintf("/%s/json", cep))
+	resp, err := c.httpClient.Get(ctx, fmt.Sprintf("/%s/json", cep), nil)
 	if err != nil {
 		return nil, err
 	}

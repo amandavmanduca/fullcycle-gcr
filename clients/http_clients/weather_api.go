@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 
 	"github.com/amandavmanduca/fullcycle-gcr/interfaces"
@@ -24,7 +23,11 @@ func NewWeatherApiClient(httpClient interfaces.HttpClientInterface, apiKey strin
 }
 
 func (c *weatherApiClient) GetWeather(ctx context.Context, city string) (*structs.WeatherResponse, error) {
-	resp, err := c.httpClient.Get(ctx, fmt.Sprintf("/current.json?key=%s&q=%s", c.apiKey, city))
+	params := map[string]string{
+		"key": c.apiKey,
+		"q":   city,
+	}
+	resp, err := c.httpClient.Get(ctx, "/current.json", params)
 	if err != nil {
 		return nil, err
 	}
@@ -33,6 +36,10 @@ func (c *weatherApiClient) GetWeather(ctx context.Context, city string) (*struct
 	res, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, errors.New("ERROR_GETTING_WEATHER")
 	}
 
 	var response structs.WeatherResponse

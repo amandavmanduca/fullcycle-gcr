@@ -8,7 +8,7 @@ import (
 )
 
 type HttpClientInterface interface {
-	Get(ctx context.Context, path string) (*http.Response, error)
+	Get(ctx context.Context, path string, queryParams map[string]string) (*http.Response, error)
 }
 
 type ClientsContainer struct {

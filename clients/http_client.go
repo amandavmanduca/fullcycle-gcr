@@ -24,7 +24,7 @@ func NewHttpClient(baseUrl string, timeout *time.Duration) interfaces.HttpClient
 	}
 }
 
-func (i HttpImpl) Get(ctx context.Context, path string) (*http.Response, error) {
+func (i HttpImpl) Get(ctx context.Context, path string, queryParams map[string]string) (*http.Response, error) {
 	if i.getMethodTimeout != nil {
 		ctxWithTimeout, cancel := context.WithTimeout(ctx, *i.getMethodTimeout)
 		ctx = ctxWithTimeout
@@ -35,7 +35,13 @@ func (i HttpImpl) Get(ctx context.Context, path string) (*http.Response, error) 
 	if err != nil {
 		return nil, err
 	}
+	q := req.URL.Query()
+	for key, value := range queryParams {
+		q.Add(key, value)
+	}
+	req.URL.RawQuery = q.Encode()
 
+	req.Header.Set("Accept", "application/json")
 	resp, err := i.client.Do(req)
 	if err != nil {
 		if ctx.Err() == context.DeadlineExceeded {
